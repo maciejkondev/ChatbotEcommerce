@@ -6,7 +6,7 @@
 Sklonuj repozytorium (lub pobierz paczkę z plikami):
 
 
-```bash
+```
 git clone https://github.com/TwojeKonto/chatbot_ecommerce.git 
 cd chatbot_ecommerce
 ```
