@@ -3,22 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MaKo Shop</title>
+    <title>MaKo Fruit Wholesaler</title>
+  
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- Ensure this is correctly linked -->
+  
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      fetch('/api/top-products/')
+        .then(response => response.json())
+        .then(data => {
+          let container = document.getElementById("products-container");
+          container.innerHTML = "";
+          data.forEach(product => {
+            container.innerHTML += `
+              <div class="product-card">
+                <div class="product-image">
+                  <img src="${product.image || 'https://via.placeholder.com/150'}" alt="${product.name}">
+                </div>
+                <div class="product-info">
+                  <h2>${product.name}</h2>
+                  <p>${product.description}</p>
+                  <p class="price">Cena: ${product.price} PLN/kg</p>
+                  <p class="stock">Pozostała ilość: ${product.stock} KG</p>
+                </div>
+              </div>
+            `;
+          });
+        })
+        .catch(error => console.error('Error fetching products:', error));
+    });
+    </script>
 </head>
 <body>
-    <h1>WYPRZEDAŻ</h1>
-    {% for product in products %}
-        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
-            <h2>{{ product.name }}</h2>
-            <p>{{ product.description }}</p>
-            <p>Cena: {{ product.price }} PLN/kg</p>
-            <p>Pozostała ilość: {{ product.stock }} KG</p>
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 200px; height: auto;">
-            {% else %}
-                <p>No image available</p>
-            {% endif %}
-        </div>
-    {% endfor %}
+    <header class="header">
+    <div class="container">
+        <h1>MaKo Fruit Wholesaler</h1>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container" id="products-container">
+      <p>Ładowanie produktów...</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2025 MaKo Fruits - Najlepsza hurtownia owoców w Polsce!</p>
+    </div>
+  </footer>
 </body>
 </html>
