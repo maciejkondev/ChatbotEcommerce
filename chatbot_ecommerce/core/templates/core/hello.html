@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaKo Shop</title>
+</head>
+<body>
+    <h1>WYPRZEDAŻ</h1>
+    {% for product in products %}
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+            <h2>{{ product.name }}</h2>
+            <p>{{ product.description }}</p>
+            <p>Cena: {{ product.price }} PLN/kg</p>
+            <p>Pozostała ilość: {{ product.stock }} KG</p>
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 200px; height: auto;">
+            {% else %}
+                <p>No image available</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</body>
+</html>
