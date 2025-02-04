@@ -72,7 +72,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application' # Ustawienie zmiennej środowiskowej DJANGO_SETTINGS_MODULE na config.settings
 
 
 # Database
@@ -122,7 +122,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static')
+    BASE_DIR / 'core/static'
 ]
 
 # Default primary key field type
@@ -130,5 +130,5 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'  # To folder gdzie będą zapisywane pliki
+MEDIA_ROOT = BASE_DIR / 'media' # Ścieżka do folderu media

@@ -1,9 +1,8 @@
 from django.shortcuts import render
-from django.http import JsonResponse
-from .models import Product  # Import the Product model
+from .models import Product  # Importujemy model Product z naszej aplikacji core
 
 
-# Create your views here.
-def hello(request):
+# Strona główna
+def index(request):
     products = Product.objects.all()
-    return render(request, 'core/hello.html', {'products': products})
+    return render(request, 'core/index.html', {'products': products})
