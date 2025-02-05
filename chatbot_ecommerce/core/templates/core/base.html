@@ -1,4 +1,3 @@
-<!-- core/templates/core/base.html -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +27,94 @@
       </nav>
     </div>
   </header>
+  
+  <!-- Miejsce na zawartość podstron -->
   {% block content %}{% endblock %}
+  
+  <!-- Widżet czatbota dodany globalnie -->
+  <div id="chatbot">
+    <div id="chatbot-header">
+      <span>Chatbot</span>
+      <button id="chatbot-close">&times;</button>
+    </div>
+    <div id="chatbot-messages"></div>
+    <form id="chatbot-form">
+      <input type="text" id="chatbot-input" placeholder="Napisz wiadomość...">
+      <button type="submit">Wyślij</button>
+    </form>
+  </div>
+  <button id="chatbot-toggle">Czat</button>
+  
   {% block extra_js %}{% endblock %}
+  <!-- Umieść tutaj globalny skrypt czatbota, jeśli nie chcesz duplikować go w innych szablonach -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const chatbotToggle = document.getElementById('chatbot-toggle');
+      const chatbotClose = document.getElementById('chatbot-close');
+      const chatbot = document.getElementById('chatbot');
+      const chatbotMessages = document.getElementById('chatbot-messages');
+      let firstMessageSent = false;
+    
+      chatbotToggle.addEventListener('click', function() {
+        chatbot.style.display = (chatbot.style.display === 'none' || chatbot.style.display === '') ? 'flex' : 'none';
+        if (!firstMessageSent) {
+          sendBotMessage("Cześć, jak mogę Ci pomóc?");
+          firstMessageSent = true;
+        }
+      });
+    
+      chatbotClose.addEventListener('click', function() {
+        chatbot.style.display = 'none';
+      });
+    
+      document.getElementById('chatbot-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const input = document.getElementById('chatbot-input');
+        const message = input.value.trim();
+        if (!message) return;
+        appendMessage(message, 'user-message');
+        input.value = '';
+    
+        fetch('/api/chatbot/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+          },
+          body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => sendBotMessage(data.response))
+        .catch(error => console.error('Error:', error));
+      });
+    
+      function appendMessage(text, className) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add(className);
+        messageDiv.textContent = text;
+        chatbotMessages.appendChild(messageDiv);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+      }
+    
+      function sendBotMessage(text) {
+        appendMessage(text, 'bot-message');
+      }
+    
+      function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith(name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+    });
+  </script>
 </body>
 </html>

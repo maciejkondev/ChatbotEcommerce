@@ -2,114 +2,35 @@
 {% load static %}
 
 {% block content %}
-  <!-- Główna zawartość strony -->
-  <div class="container" id="products-container">
-    <p>Ładowanie produktów...</p>
-  </div>
-
-  <!-- Chatbot (dodajemy go do zawartości, aby był widoczny na stronie głównej) -->
-  <div id="chatbot">
-    <div id="chatbot-header">
-      <span>Chatbot</span>
-      <button id="chatbot-close">&times;</button>
+  <div class="container">
+    <!-- Sekcja Top 3 produktów -->
+    <h2>Top 3 produkty</h2>
+    <div id="top-products-container">
+      <p>Ładowanie top produktów...</p>
     </div>
-    <div id="chatbot-messages"></div>
-    <form id="chatbot-form">
-      <input type="text" id="chatbot-input" placeholder="Napisz wiadomość...">
-      <button type="submit">Wyślij</button>
-    </form>
+
+    <!-- Sekcja sortowania alfabetycznego -->
+    <h2>Filtruj produkty według litery</h2>
+    <!-- Kontener, do którego dynamicznie wstawimy litery alfabetu -->
+    <div id="alphabet-filter"></div>
+    <!-- Kontener dla produktów przefiltrowanych według wybranej litery -->
+    <div id="filtered-products-container">
+      <p>Wybierz literę, aby wyświetlić produkty.</p>
+    </div>
   </div>
-  <button id="chatbot-toggle">Czat</button>
 {% endblock %}
 
 {% block extra_js %}
   <script>
     document.addEventListener("DOMContentLoaded", function() {
-      const chatbotToggle = document.getElementById('chatbot-toggle');
-      const chatbotClose = document.getElementById('chatbot-close');
-      const chatbot = document.getElementById('chatbot');
-      const chatbotMessages = document.getElementById('chatbot-messages');
-      let firstMessageSent = false;
-    
-      // Pokazanie/ukrycie chatbota
-      chatbotToggle.addEventListener('click', function() {
-        chatbot.style.display = (chatbot.style.display === 'none' || chatbot.style.display === '') ? 'flex' : 'none';
-    
-        // Wysłanie pierwszej wiadomości tylko raz
-        if (!firstMessageSent) {
-          sendBotMessage("Cześć, jak mogę Ci pomóc?");
-          firstMessageSent = true;
-        }
-      });
-
-      // Zamknięcie chatbota
-      chatbotClose.addEventListener('click', function() {
-        chatbot.style.display = 'none';
-      });
-    
-      // Obsługa wysyłania wiadomości
-      document.getElementById('chatbot-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const input = document.getElementById('chatbot-input');
-        const message = input.value.trim();
-        if (!message) return;
-    
-        // Dodaj wiadomość użytkownika do okna chatu
-        appendMessage(message, 'user-message');
-        input.value = '';
-    
-        // Wysłanie POST requestu do API chatbota
-        fetch('/api/chatbot/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-          },
-          body: JSON.stringify({ message: message })
-        })
-        .then(response => response.json())
-        .then(data => sendBotMessage(data.response))
-        .catch(error => console.error('Error:', error));
-      });
-    
-      // Funkcja dodawania wiadomości do chatu
-      function appendMessage(text, className) {
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add(className);
-        messageDiv.textContent = text;
-        chatbotMessages.appendChild(messageDiv);
-        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-      }
-    
-      // Funkcja wysyłania wiadomości bota
-      function sendBotMessage(text) {
-        appendMessage(text, 'bot-message');
-      }
-    
-      // Funkcja pobierająca token CSRF z ciasteczek
-      function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-          const cookies = document.cookie.split(';');
-          for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith(name + '=')) {
-              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-              break;
-            }
-          }
-        }
-        return cookieValue;
-      }
-    
-      // Inicjalizacja pobierania top 3 produktów (np. pod względem dostępności)
+      // Pobieranie Top 3 produktów
       fetch('/api/top-products/')
         .then(response => response.json())
         .then(data => {
-          let container = document.getElementById("products-container");
-          container.innerHTML = "";
+          const topContainer = document.getElementById("top-products-container");
+          topContainer.innerHTML = "";
           data.forEach(product => {
-            container.innerHTML += `
+            topContainer.innerHTML += `
               <div class="product-card">
                 <div class="product-image">
                   <img src="${product.image || 'https://via.placeholder.com/150'}" alt="${product.name}">
@@ -119,14 +40,65 @@
                   <p>${product.description}</p>
                   <p class="price">Cena: ${product.price} PLN/kg</p>
                   <p class="stock">Pozostała ilość: ${product.stock} KG</p>
-                  <!-- Przycisk umożliwiający dodanie do koszyka -->
                   <a href="/core/add-to-cart/${product.id}/" class="btn">Dodaj do koszyka</a>
                 </div>
               </div>
             `;
           });
         })
-        .catch(error => console.error('Error fetching products:', error));
+        .catch(error => console.error('Error fetching top products:', error));
+      
+      // Generowanie liter alfabetu dynamicznie
+      const alphabetContainer = document.getElementById("alphabet-filter");
+      for (let i = 65; i <= 90; i++) {  // ASCII od 65 (A) do 90 (Z)
+        const letter = String.fromCharCode(i);
+        const a = document.createElement("a");
+        a.href = "#";
+        a.classList.add("alphabet-letter");
+        a.setAttribute("data-letter", letter);
+        a.textContent = letter;
+        alphabetContainer.appendChild(a);
+      }
+      
+      // Obsługa kliknięć w literach
+      const letterLinks = document.querySelectorAll('#alphabet-filter .alphabet-letter');
+      letterLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const letter = this.getAttribute('data-letter');
+          // Ustawienie aktywnej litery
+          letterLinks.forEach(l => l.classList.remove('active'));
+          this.classList.add('active');
+          
+          fetch('/api/products/by-letter/?letter=' + letter)
+            .then(response => response.json())
+            .then(data => {
+              const filteredContainer = document.getElementById("filtered-products-container");
+              filteredContainer.innerHTML = "";
+              if(data.length === 0) {
+                filteredContainer.innerHTML = `<p>Brak produktów zaczynających się na literę ${letter}.</p>`;
+              } else {
+                data.forEach(product => {
+                  filteredContainer.innerHTML += `
+                    <div class="product-card">
+                      <div class="product-image">
+                        <img src="${product.image || 'https://via.placeholder.com/150'}" alt="${product.name}">
+                      </div>
+                      <div class="product-info">
+                        <h2>${product.name}</h2>
+                        <p>${product.description}</p>
+                        <p class="price">Cena: ${product.price} PLN/kg</p>
+                        <p class="stock">Pozostała ilość: ${product.stock} KG</p>
+                        <a href="/core/add-to-cart/${product.id}/" class="btn">Dodaj do koszyka</a>
+                      </div>
+                    </div>
+                  `;
+                });
+              }
+            })
+            .catch(error => console.error('Error fetching products by letter:', error));
+        });
+      });
     });
   </script>
 {% endblock %}
