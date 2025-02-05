@@ -95,6 +95,9 @@ API aplikacji znajduje się pod adresem: http://127.0.0.1:8000/api/.
 
 - Weryfikacja logów, zapytań API oraz błędów następuje w aktywnej sesji konsoli
 
+
+## Diagram Mermaid
+
 ```mermaid
 graph TD;
     A[chatbot_ecommerce] -->|App| B(api);
