@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+  <h2>Podsumowanie zamówienia</h2>
+  <form method="post">
+    {% csrf_token %}
+    <table>
+      <thead>
+        <tr>
+          <th>Produkt</th>
+          <th>Cena</th>
+          <th>Ilość</th>
+          <th>Całkowita kwota</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart_items %}
+        <tr>
+          <td>{{ item.product.name }}</td>
+          <td>{{ item.product.price }} PLN</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.subtotal }} PLN</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <h3>Łącznie: {{ total }} PLN</h3>
+    <button type="submit" class="btn">Potwierdź zamówienie</button>
+  </form>
+</div>
+{% endblock %}

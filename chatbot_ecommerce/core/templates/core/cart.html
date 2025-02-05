@@ -1,26 +1,54 @@
 <!-- core/templates/core/cart.html -->
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="container">
-  <h2>Your Shopping Cart</h2>
+  <h2>Twój Koszyk</h2>
   {% if cart_items %}
-    <div id="products-container">
-      {% for item in cart_items %}
-      <div class="product-card">
-         <div class="product-image">
-            <img src="{{ item.image_url }}" alt="{{ item.name }}">
-         </div>
-         <div class="product-info">
-           <h2>{{ item.name }}</h2>
-           <p class="price">${{ item.price }}</p>
-         </div>
-      </div>
-      {% endfor %}
+    <!-- Formularz do aktualizacji ilości produktów w koszyku -->
+    <form action="{% url 'update_cart' %}" method="post">
+      {% csrf_token %}
+      <table>
+        <thead>
+          <tr>
+            <th>Produkt</th>
+            <th>Cena</th>
+            <th>Ilość</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cart_items %}
+          <tr>
+            <td>
+              {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width:100px; height:auto;">
+              {% else %}
+                <img src="https://via.placeholder.com/150" alt="{{ item.product.name }}" style="width:100px; height:auto;">
+              {% endif %}
+              <br>
+              {{ item.product.name }}
+            </td>
+            <td>{{ item.product.price }} PLN</td>
+            <td>
+              <input type="number" name="quantity_{{ item.product.id }}" value="{{ item.quantity }}" min="1">
+            </td>
+            <td>{{ item.subtotal }} PLN</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <h3>Łącznie: {{ total }} PLN</h3>
+      <button type="submit" class="btn">Aktualizuj koszyk</button>
+    </form>
+
+    <!-- Link do przejścia do strony podsumowania zamówienia -->
+    <div style="margin-top:20px;">
+      <a href="{% url 'checkout' %}" class="btn">Kup teraz</a>
     </div>
-    <h3>Total: ${{ total }}</h3>
   {% else %}
-    <p>Your cart is empty.</p>
+    <p>Twój koszyk jest pusty.</p>
   {% endif %}
 </div>
 {% endblock %}

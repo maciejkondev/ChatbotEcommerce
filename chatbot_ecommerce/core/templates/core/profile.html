@@ -1,10 +1,28 @@
-<!-- core/templates/core/profile.html -->
 {% extends 'core/base.html' %}
 
 {% block content %}
 <div class="container">
-  <h2>Your Profile</h2>
+  <h2>Twój Profil</h2>
   <p><strong>Username:</strong> {{ request.user.username }}</p>
   <p><strong>Email:</strong> {{ request.user.email }}</p>
+
+  <h3>Historia Zamówień</h3>
+  {% if orders %}
+    {% for order in orders %}
+      <div class="order-card">
+        <h4>Zamówienie {{ order.id }}</h4>
+        <p>Data: {{ order.created_at|date:"d.m.Y H:i" }}</p>
+        <p>Status: {{ order.get_status_display }}</p>
+        <p>Łączna wartość: {{ order.total_value }} PLN</p>
+        <ul>
+          {% for item in order.items.all %}
+            <li>{{ item.quantity }} x {{ item.product.name }} – {{ item.item_price }} PLN</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Brak zamówień.</p>
+  {% endif %}
 </div>
 {% endblock %}

@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-  <h2>Register</h2>
+  <h2>Rejestracja</h2>
   <form method="POST" class="register-form">
     {% csrf_token %}
     {% for field in form %}
@@ -15,7 +15,7 @@
         {% endif %}
       </div>
     {% endfor %}
-    <button type="submit">Register</button>
+    <button type="submit">Załóż konto</button>
   </form>
 </div>
 {% endblock %}

@@ -29,16 +29,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),  # Panel administracyjny
     path('core/', include('core.urls')),  # Aplikacja core
     path('api/', include('api.urls')),  # Aplikacja api
-    # Dodanie ścieżek logowania i wylogowywania
-    path('login/', auth_views.LoginView.as_view(template_name='core/login.html'), name='login'),
-    path(
-        'logout/',
-        auth_views.LogoutView.as_view(
-            http_method_names=['get', 'post'],  # Akceptuj GET oraz POST
-            next_page='/core/index/'  # Po wylogowaniu przekierowanie na stronę główną
-        ),
-        name='logout'
-    ),
     path('', redirect_to_index, name='home'),  # Strona główna
     path('<path:unused_path>/', redirect_to_index)  # Przekierowanie nieznanych adresów na stronę główną
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Obsługa plików multimedialnych
