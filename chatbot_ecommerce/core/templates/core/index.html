@@ -1,13 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MaKo Fruit Wholesaler</title>
-  
-  {% load static %}
-  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-  
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+  <!-- Główna zawartość strony -->
+  <div class="container" id="products-container">
+    <p>Ładowanie produktów...</p>
+  </div>
+
+  <!-- Chatbot (dodajemy go do zawartości, aby był widoczny na stronie głównej) -->
+  <div id="chatbot">
+    <div id="chatbot-header">
+      <span>Chatbot</span>
+      <button id="chatbot-close">&times;</button>
+    </div>
+    <div id="chatbot-messages"></div>
+    <form id="chatbot-form">
+      <input type="text" id="chatbot-input" placeholder="Napisz wiadomość...">
+      <button type="submit">Wyślij</button>
+    </form>
+  </div>
+  <button id="chatbot-toggle">Czat</button>
+{% endblock %}
+
+{% block extra_js %}
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       const chatbotToggle = document.getElementById('chatbot-toggle');
@@ -47,8 +62,8 @@
         fetch('/api/chatbot/', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json', // Ustawienie nagłówka Content-Type na application/json
-            'X-CSRFToken': getCookie('csrftoken') // Pobieranie tokenu CSRF
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
           },
           body: JSON.stringify({ message: message })
         })
@@ -87,7 +102,7 @@
         return cookieValue;
       }
     
-      // Inicjalizacja pobierania przez API topowych trzech produktów pod względem dostępności
+      // Inicjalizacja pobierania top 3 produktów (np. pod względem dostępności)
       fetch('/api/top-products/')
         .then(response => response.json())
         .then(data => {
@@ -112,42 +127,4 @@
         .catch(error => console.error('Error fetching products:', error));
     });
   </script>
-</head>
-<body>
-  <header class="header">
-    <div class="container header-container">
-      <h1>MaKo Fruit Wholesaler</h1>
-      <nav class="header-nav">
-        <a href="/register/" class="btn">Utwórz konto</a>
-        <a href="/cart/" class="btn">Koszyk</a>
-      </nav>
-    </div>
-  </header>
-  
-  <main class="main-content">
-    <div class="container" id="products-container">
-      <p>Ładowanie produktów...</p>
-    </div>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <p>© 2025 MaKo Fruits - Najlepsza hurtownia owoców w Polsce!</p>
-    </div>
-  </footer>
-
-  <!-- Chatbot -->
-  <div id="chatbot">
-    <div id="chatbot-header">
-      <span>Chatbot</span>
-      <button id="chatbot-close">&times;</button>
-    </div>
-    <div id="chatbot-messages"></div>
-    <form id="chatbot-form">
-      <input type="text" id="chatbot-input" placeholder="Napisz wiadomość...">
-      <button type="submit">Wyślij</button>
-    </form>
-  </div>
-  <button id="chatbot-toggle">Czat</button>
-</body>
-</html>
+{% endblock %}

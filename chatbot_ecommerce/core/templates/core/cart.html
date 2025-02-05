@@ -1,0 +1,26 @@
+<!-- core/templates/core/cart.html -->
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container">
+  <h2>Your Shopping Cart</h2>
+  {% if cart_items %}
+    <div id="products-container">
+      {% for item in cart_items %}
+      <div class="product-card">
+         <div class="product-image">
+            <img src="{{ item.image_url }}" alt="{{ item.name }}">
+         </div>
+         <div class="product-info">
+           <h2>{{ item.name }}</h2>
+           <p class="price">${{ item.price }}</p>
+         </div>
+      </div>
+      {% endfor %}
+    </div>
+    <h3>Total: ${{ total }}</h3>
+  {% else %}
+    <p>Your cart is empty.</p>
+  {% endif %}
+</div>
+{% endblock %}

@@ -59,7 +59,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'core', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -132,3 +132,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'  # To folder gdzie będą zapisywane pliki
 MEDIA_ROOT = BASE_DIR / 'media' # Ścieżka do folderu media
+
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/core/index/'

@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from core.models import Product, Faq
 from core.serializers import ProductSerializer
 
+
 # Ładujemy model języka polskiego z biblioteki spaCy
 nlp = spacy.load('pl_core_news_lg')
 

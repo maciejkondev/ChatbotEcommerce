@@ -1,0 +1,33 @@
+<!-- core/templates/core/base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot Ecommerce</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <h1>Chatbot Ecommerce</h1>
+      <nav>
+        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'cart' %}">Cart</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'profile' %}">Profile</a>
+          <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Log Out</button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}">Login</a>
+          <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+  {% block content %}{% endblock %}
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

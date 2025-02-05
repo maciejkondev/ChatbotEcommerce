@@ -14,20 +14,31 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin # Import panelu administracyjnego
-from django.urls import path, include # Import funkcji obsługującej URL-e
-from django.conf import settings # Import ustawień
-from django.conf.urls.static import static # Import funkcji obsługującej pliki multimedialne
-from django.shortcuts import redirect # Import funkcji przekierowującej
+from django.contrib import admin  # Import panelu administracyjnego
+from django.urls import path, include  # Import funkcji obsługujących URL-e
+from django.conf import settings  # Import ustawień
+from django.conf.urls.static import static  # Import funkcji obsługujących pliki multimedialne
+from django.shortcuts import redirect  # Import funkcji przekierowującej
+from django.contrib.auth import views as auth_views  # Import widoków uwierzytelniania
 
-def redirect_to_index(request, unused_path=None): # Copilot twierdzi, że unused_path jest zbędne, ale bez tego nie działa
-    return redirect('/core/index/') # Przekierowanie na stronę główną
+def redirect_to_index(request, unused_path=None): #Copilot twierdzi, że jest nieużywany, ale bez tego nie działa całkowite przekierowanie
+    # Przekierowanie na stronę główną (np. /core/index/)
+    return redirect('/core/index/')
 
-
-urlpatterns = [ # Lista URL-i
-    path('admin/', admin.site.urls), # Panel administracyjny
-    path('core/', include('core.urls')), # Aplikacja core
-    path('api/', include('api.urls')), # Aplikacja api
-    path('', redirect_to_index, name='home'), # Strona główna
-    path('<path:unused_path>/', redirect_to_index) # Przekierowanie na stronę główną
-]  + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Dodanie obsługi plików multimedialnych
+urlpatterns = [
+    path('admin/', admin.site.urls),  # Panel administracyjny
+    path('core/', include('core.urls')),  # Aplikacja core
+    path('api/', include('api.urls')),  # Aplikacja api
+    # Dodanie ścieżek logowania i wylogowywania
+    path('login/', auth_views.LoginView.as_view(template_name='core/login.html'), name='login'),
+    path(
+        'logout/',
+        auth_views.LogoutView.as_view(
+            http_method_names=['get', 'post'],  # Akceptuj GET oraz POST
+            next_page='/core/index/'  # Po wylogowaniu przekierowanie na stronę główną
+        ),
+        name='logout'
+    ),
+    path('', redirect_to_index, name='home'),  # Strona główna
+    path('<path:unused_path>/', redirect_to_index)  # Przekierowanie nieznanych adresów na stronę główną
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Obsługa plików multimedialnych
