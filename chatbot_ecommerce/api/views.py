@@ -129,7 +129,7 @@ def chatbot_request(request):
                 response_text = "Przepraszamy, nie znaleziono informacji o dostawie."
         
         else:
-            response_text = "Przepraszam, nie rozumiem pytania. Proszę sprecyzować zapytanie."
+            response_text = "Przepraszam, nie rozumiem pytania. Proszę sprecyzować zapytanie." # Domyślna odpowiedź
     
         return JsonResponse({'response': response_text})
     
@@ -143,8 +143,7 @@ def top_products(request): # Widok API dla topowych produktów
     return Response(serializer.data) # Zwracamy dane w formacie JSON
 
 @permission_classes([AllowAny])
-# --- Widok CRUD dla produktów (ModelViewSet) ---
-class ProductViewSet(viewsets.ModelViewSet):
+class ProductViewSet(viewsets.ModelViewSet): # Widok zbioru dla produktów
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -158,18 +157,15 @@ class ProductViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
 
-class OrderViewSet(viewsets.ModelViewSet):
+class OrderViewSet(viewsets.ModelViewSet): # Widok zbioru dla zamówień
     queryset = Order.objects.all()
-    # Możesz stworzyć dedykowany serializator dla Order – poniżej uproszczony przykład
 
     serializer_class = OrderSerializer
 
-    # Endpoint nietypowy: zestawienie miesięczne zamówień
-    # Tylko administrator ma do niego dostęp.
-    @action(detail=False, methods=['get'], url_path='monthly-summary',
-            permission_classes=[permissions.IsAdminUser])
+    @action(detail=False, methods=['get'], url_path='monthly-summary', # Dodajemy akcję dla podsumowania miesięcznego
+            permission_classes=[permissions.IsAdminUser]) # Tylko dla administratora
     def monthly_summary(self, request):
-        summary = (
+        summary = ( # Pobieramy podsumowanie dla każdego miesiąca
             Order.objects
             .annotate(month=TruncMonth('created_at'))
             .values('month')
@@ -178,10 +174,9 @@ class OrderViewSet(viewsets.ModelViewSet):
         )
         return Response(summary)
 
-# --- Widok rejestracji użytkownika z tokenem ---
 @api_view(['POST'])
 @permission_classes([])  # Pozwalamy anonimowym użytkownikom na rejestrację
-def register(request):
+def register(request): # Widok rejestracji użytkownika
     username = request.data.get('username')
     password = request.data.get('password')
     email = request.data.get('email', '')

@@ -1,4 +1,3 @@
-<!-- core/templates/core/login.html -->
 {% extends 'core/base.html' %}
 
 {% block content %}
@@ -7,7 +6,7 @@
   <form method="POST" class="login-form">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Zaloguj</button>
+    <button type="submit">Zaloguj się</button>
   </form>
 </div>
 {% endblock %}

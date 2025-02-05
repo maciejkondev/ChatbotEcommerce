@@ -37,26 +37,6 @@ body { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; background-col
 .login-form input { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
 .container h2 { margin-top: 40px; font-size: 1.8rem; color: var(--primary-color); text-align: center; }
 #top-products-container, #sorted-products-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 20px; }
-/* Stylizacja paska z literami alfabetu */
-#alphabet-filter {
-  text-align: center;
-  margin: 20px 0;
-}
-
-#alphabet-filter .alphabet-letter {
-  display: inline-block;
-  margin: 0 4px;
-  padding: 6px 10px;
-  text-decoration: none;
-  font-weight: bold;
-  color: var(--primary-color);
-  border: 1px solid var(--primary-color);
-  border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-#alphabet-filter .alphabet-letter:hover,
-#alphabet-filter .alphabet-letter.active {
-  background-color: var(--primary-color);
-  color: #fff;
-}
+#alphabet-filter { text-align: center; margin: 20px 0; }
+#alphabet-filter .alphabet-letter { display: inline-block; margin: 0 4px; padding: 6px 10px; text-decoration: none; font-weight: bold; color: var(--primary-color); border: 1px solid var(--primary-color); border-radius: 4px; transition: background-color 0.3s, color 0.3s; }
+#alphabet-filter .alphabet-letter:hover, #alphabet-filter .alphabet-letter.active { background-color: var(--primary-color); color: #fff; }

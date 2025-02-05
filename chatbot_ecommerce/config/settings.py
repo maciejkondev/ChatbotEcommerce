@@ -48,7 +48,7 @@ INSTALLED_APPS = [
 # Konfiguracja Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.TokenAuthentication', # Dla API
         'rest_framework.authentication.SessionAuthentication',  # Dla przeglądarki
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -145,5 +145,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'  # To folder gdzie będą zapisywane pliki
 MEDIA_ROOT = BASE_DIR / 'media' # Ścieżka do folderu media
 
-LOGOUT_REDIRECT_URL = '/'
-LOGIN_REDIRECT_URL = '/core/index/'
+LOGOUT_REDIRECT_URL = '/' # Przekierowanie po wylogowaniu
+LOGIN_REDIRECT_URL = '/core/index/' # Przekierowanie po zalogowaniu

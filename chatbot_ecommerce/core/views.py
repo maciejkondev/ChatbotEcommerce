@@ -1,5 +1,5 @@
 from decimal import Decimal
-from .models import Product, Order, OrderItem, Customer  # Importujemy model Product z naszej aplikacji core
+from .models import Product, Order, OrderItem, Customer
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
@@ -30,6 +30,7 @@ def cart(request):
     }
     return render(request, 'core/cart.html', context)
 
+# Rejestracja
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -43,6 +44,7 @@ def register(request):
     return render(request, 'core/register.html', {'form': form})
 
 @login_required
+# Profil klienta
 def profile(request):
     # Pobierz lub utwórz profil klienta
     customer, created = Customer.objects.get_or_create(user=request.user)
@@ -53,6 +55,7 @@ def profile(request):
     }
     return render(request, 'core/profile.html', context)
 
+# Dodaj do koszyka
 def add_to_cart(request, product_id):
     cart = request.session.get('cart', {})
     product_key = str(product_id)
@@ -63,6 +66,7 @@ def add_to_cart(request, product_id):
     request.session['cart'] = cart
     return redirect('cart')
 
+# Aktualizuj koszyk
 def update_cart(request):
     if request.method == 'POST':
         new_cart = {}
@@ -78,6 +82,7 @@ def update_cart(request):
         request.session['cart'] = new_cart
     return redirect('cart')
 
+# Podsumowanie zamówienia
 def checkout(request):
     if not request.user.is_authenticated:
         return render(request, 'core/error.html', {'message': 'Musisz być zalogowany, aby dokonać zakupu.'})

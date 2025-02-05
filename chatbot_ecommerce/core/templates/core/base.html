@@ -28,10 +28,8 @@
     </div>
   </header>
   
-  <!-- Miejsce na zawartość podstron -->
   {% block content %}{% endblock %}
   
-  <!-- Widżet czatbota dodany globalnie -->
   <div id="chatbot">
     <div id="chatbot-header">
       <span>Chatbot</span>
@@ -46,7 +44,7 @@
   <button id="chatbot-toggle">Czat</button>
   
   {% block extra_js %}{% endblock %}
-  <!-- Umieść tutaj globalny skrypt czatbota, jeśli nie chcesz duplikować go w innych szablonach -->
+  <!-- globalny skrypt -->
   <script>
     document.addEventListener("DOMContentLoaded", function() {
       const chatbotToggle = document.getElementById('chatbot-toggle');

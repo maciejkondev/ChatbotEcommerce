@@ -6,4 +6,4 @@ admin.site.register(Product)
 admin.site.register(Order)
 admin.site.register(OrderItem)
 admin.site.register(Customer)
-admin.site.register(Faq) #Głównie do wykorzystania przez Chatbota ewentualnie dynamiczna strona FAQ
+admin.site.register(Faq) # Głównie do wykorzystania przez Chatbota, ewentualnie dynamiczna strona FAQ do edycji dla administratora
